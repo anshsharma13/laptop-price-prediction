@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LaptopScout — Your Recommendations</title>
+  <meta name="description" content="Your personalised laptop recommendations from LaptopScout based on your budget and preferences.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/style.css?v=2">
+  <link rel="stylesheet" href="/static/css/sdp.css?v=2">
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="ls-navbar navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="ls-brand navbar-brand" href="/">
+      <i class="bi bi-laptop-fill"></i> LaptopScout
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain2" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMain2">
+      <ul class="navbar-nav ms-auto me-3 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link" href="/"><i class="bi bi-search me-1"></i> Find Laptop</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#comparisonSection"><i class="bi bi-columns-gap me-1"></i> Compare</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="savedNavBtn">
+            <i class="bi bi-heart me-1"></i> Saved
+            <span class="ls-saved-badge" id="savedBadge">0</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about"><i class="bi bi-info-circle me-1"></i> About</a>
+        </li>
+      </ul>
+      <div id="navSearchWrap">
+        <div class="ls-nav-search">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="navSearchInput" class="form-control" placeholder="Search laptops…" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     FILTER BAR
+     ============================================================ -->
+<div class="ls-filter-bar">
+  <div class="container-fluid px-4">
+    <span class="ls-filter-chip">
+      <i class="bi bi-currency-rupee"></i>
+      Budget: ₹{{ "{:,}".format(user_prefs.budget | int) }}
+    </span>
+    {% if user_prefs.purpose %}
+    <span class="ls-filter-chip">
+      <i class="bi bi-bullseye"></i> {{ user_prefs.purpose }}
+    </span>
+    {% endif %}
+    {% if user_prefs.brand %}
+    <span class="ls-filter-chip">
+      <i class="bi bi-award"></i> {{ user_prefs.brand }}
+    </span>
+    {% endif %}
+    {% if user_prefs.ram %}
+    <span class="ls-filter-chip">
+      <i class="bi bi-memory"></i> {{ user_prefs.ram }}GB RAM+
+    </span>
+    {% endif %}
+    {% if user_prefs.graphics %}
+    <span class="ls-filter-chip">
+      <i class="bi bi-gpu-card"></i> {{ user_prefs.graphics | title }}
+    </span>
+    {% endif %}
+    {% if user_prefs.os %}
+    <span class="ls-filter-chip">
+      <i class="bi bi-windows"></i> {{ user_prefs.os }}
+    </span>
+    {% endif %}
+    <a href="/" class="ls-modify-btn">
+      <i class="bi bi-sliders"></i> Modify Search
+    </a>
+  </div>
+</div>
+
+<!-- ============================================================
+     CATEGORY CARDS
+     ============================================================ -->
+<section class="ls-categories-section">
+  <div class="container-fluid px-4">
+    <div class="row g-3">
+
+      <!-- Best Match -->
+      <div class="col-md-4">
+        <div class="ls-cat-card ls-cat-match">
+          <span class="ls-cat-tag ls-tag-match">
+            <i class="bi bi-trophy-fill"></i> Best Match
+          </span>
+          <div class="ls-cat-name" title="{{ best_match.model_name }}">{{ best_match.model_name }}</div>
+          <div class="ls-cat-brand">{{ best_match.brand }}</div>
+          <div class="ls-cat-score">{{ best_match.recommendation_score | int }}%</div>
+          <div class="ls-cat-score-label">Recommendation Score</div>
+          <div class="ls-cat-price">₹{{ "{:,}".format(best_match.price) }}</div>
+        </div>
+      </div>
+
+      <!-- Best Value -->
+      <div class="col-md-4">
+        <div class="ls-cat-card ls-cat-value">
+          <span class="ls-cat-tag ls-tag-value">
+            <i class="bi bi-gem"></i> Best Value
+          </span>
+          <div class="ls-cat-name" title="{{ best_value.model_name }}">{{ best_value.model_name }}</div>
+          <div class="ls-cat-brand">{{ best_value.brand }}</div>
+          <div class="ls-cat-score">{{ best_value.value_score }}</div>
+          <div class="ls-cat-score-label">Value Score</div>
+          <div class="ls-cat-price">₹{{ "{:,}".format(best_value.price) }}</div>
+        </div>
+      </div>
+
+      <!-- Best Performance -->
+      <div class="col-md-4">
+        <div class="ls-cat-card ls-cat-perf">
+          <span class="ls-cat-tag ls-tag-perf">
+            <i class="bi bi-lightning-charge-fill"></i> Best Performance
+          </span>
+          <div class="ls-cat-name" title="{{ best_performance.model_name }}">{{ best_performance.model_name }}</div>
+          <div class="ls-cat-brand">{{ best_performance.brand }}</div>
+          <div class="ls-cat-score">{{ best_performance.performance_score }}</div>
+          <div class="ls-cat-score-label">Performance Score</div>
+          <div class="ls-cat-price">₹{{ "{:,}".format(best_performance.price) }}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MAIN DASHBOARD (3 columns)
+     ============================================================ -->
+<div class="ls-result-layout">
+  <div class="container-fluid px-4">
+    <div class="row g-4">
+
+      <!-- ======================================================
+           LEFT SIDEBAR: Preferences + Compare
+           ====================================================== -->
+      <div class="col-lg-3">
+        <div class="ls-sidebar-card">
+          <div class="ls-sidebar-title"><i class="bi bi-sliders me-1"></i> Your Preferences</div>
+
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-currency-rupee"></i> Budget</span>
+            <span class="ls-pref-val">₹{{ "{:,}".format(user_prefs.budget | int) }}</span>
+          </div>
+          {% if user_prefs.purpose %}
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-bullseye"></i> Purpose</span>
+            <span class="ls-pref-val">{{ user_prefs.purpose }}</span>
+          </div>
+          {% endif %}
+          {% if user_prefs.brand %}
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-award"></i> Brand</span>
+            <span class="ls-pref-val">{{ user_prefs.brand }}</span>
+          </div>
+          {% endif %}
+          {% if user_prefs.ram %}
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-memory"></i> Min RAM</span>
+            <span class="ls-pref-val">{{ user_prefs.ram }} GB</span>
+          </div>
+          {% endif %}
+          {% if user_prefs.storage %}
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-device-hdd"></i> Min SSD</span>
+            <span class="ls-pref-val">{{ user_prefs.storage }} GB</span>
+          </div>
+          {% endif %}
+          {% if user_prefs.graphics %}
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-gpu-card"></i> Graphics</span>
+            <span class="ls-pref-val">{{ user_prefs.graphics | title }}</span>
+          </div>
+          {% endif %}
+          {% if user_prefs.processor %}
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-cpu"></i> CPU</span>
+            <span class="ls-pref-val">{{ user_prefs.processor | title }}</span>
+          </div>
+          {% endif %}
+          {% if user_prefs.os %}
+          <div class="ls-pref-row">
+            <span class="ls-pref-key"><i class="bi bi-windows"></i> OS</span>
+            <span class="ls-pref-val">{{ user_prefs.os }}</span>
+          </div>
+          {% endif %}
+
+          <hr class="ls-sidebar-divider">
+
+          <a href="/" class="ls-modify-btn d-block text-center mb-3" style="width:100%">
+            <i class="bi bi-arrow-left me-1"></i> New Search
+          </a>
+
+          <!-- Compare sidebar -->
+          <div class="ls-compare-sidebar">
+            <div class="ls-compare-sidebar-title">
+              <i class="bi bi-columns-gap me-1"></i> Compare Laptops
+            </div>
+            <div id="compareSlot1" class="ls-compare-slot">
+              <span style="color:rgba(255,255,255,0.25);font-size:0.75rem;font-style:italic">Empty slot</span>
+            </div>
+            <div id="compareSlot2" class="ls-compare-slot">
+              <span style="color:rgba(255,255,255,0.25);font-size:0.75rem;font-style:italic">Empty slot</span>
+            </div>
+            <div id="compareSlot3" class="ls-compare-slot">
+              <span style="color:rgba(255,255,255,0.25);font-size:0.75rem;font-style:italic">Empty slot</span>
+            </div>
+            <button id="compareNowBtn" class="ls-compare-now-btn" disabled>
+              <i class="bi bi-columns-gap me-1"></i> Compare Now
+            </button>
+            <p style="font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:8px;margin-bottom:0">
+              Select 2–3 laptops using the Compare button on each card
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ======================================================
+           CENTER: SORT + RECOMMENDATION CARDS
+           ====================================================== -->
+      <div class="col-lg-6">
+        <!-- Sort bar -->
+        <div class="ls-sort-bar">
+          <span class="ls-count-badge">
+            <i class="bi bi-funnel me-1"></i>
+            {{ recommendations | length }} laptop{% if recommendations | length != 1 %}s{% endif %} found
+          </span>
+          <div class="ls-sort-btns">
+            <button class="ls-sort-btn active" data-sort="match">Best Match</button>
+            <button class="ls-sort-btn" data-sort="value">Best Value</button>
+            <button class="ls-sort-btn" data-sort="price">Lowest Price</button>
+            <button class="ls-sort-btn" data-sort="performance">Best Performance</button>
+          </div>
+        </div>
+
+        <!-- Cards container -->
+        <div id="recCardsContainer">
+          {% for rec in recommendations %}
+          <div class="ls-rec-card"
+               data-laptop-id="{{ rec.laptop_id }}"
+               data-rec-score="{{ rec.recommendation_score }}"
+               data-val-score="{{ rec.value_score }}"
+               data-price="{{ rec.price }}"
+               data-perf-score="{{ rec.performance_score }}">
+
+            <!-- Badges -->
+            <div class="ls-rec-card-top">
+              {% if rec.is_best_match %}
+              <span class="ls-badge ls-badge-match"><i class="bi bi-trophy-fill"></i> Best Match</span>
+              {% endif %}
+              {% if rec.is_best_value %}
+              <span class="ls-badge ls-badge-value"><i class="bi bi-gem"></i> Best Value</span>
+              {% endif %}
+              {% if rec.is_best_performance %}
+              <span class="ls-badge ls-badge-perf"><i class="bi bi-lightning-charge-fill"></i> Top Performance</span>
+              {% endif %}
+            </div>
+
+            <!-- Card body -->
+            <div class="ls-rec-card-body">
+              <div class="ls-rec-info">
+                <h5 class="ls-rec-name" title="{{ rec.model_name }}">{{ rec.model_name }}</h5>
+                <p class="ls-rec-brand">{{ rec.brand }}</p>
+
+                <div class="ls-rec-specs">
+                  <span class="ls-spec-chip"><i class="bi bi-cpu"></i> {{ rec.processor }}</span>
+                  <span class="ls-spec-chip"><i class="bi bi-memory"></i> {{ rec.ram }}GB RAM</span>
+                  <span class="ls-spec-chip"><i class="bi bi-device-hdd"></i> {{ rec.ssd }}GB SSD{% if rec.hdd > 0 %} + {{ rec.hdd }}GB HDD{% endif %}</span>
+                  <span class="ls-spec-chip"><i class="bi bi-gpu-card"></i> {{ rec.graphics }}</span>
+                  <span class="ls-spec-chip"><i class="bi bi-display"></i> {{ rec.screen_size }}"</span>
+                </div>
+
+                <div class="ls-rec-tags">
+                  {% for tag in rec.suitable_for %}
+                  <span class="ls-use-tag"><i class="bi bi-check2"></i> {{ tag }}</span>
+                  {% endfor %}
+                </div>
+
+                <div class="ls-rec-price">₹{{ "{:,}".format(rec.price) }}</div>
+
+                <div class="ls-rec-actions">
+                  <button class="ls-btn ls-btn-details" onclick="showDetails({{ rec.laptop_id }})">
+                    <i class="bi bi-info-circle"></i> View Details
+                  </button>
+                  <button class="ls-btn ls-btn-compare"
+                          data-lid="{{ rec.laptop_id }}"
+                          onclick="toggleCompare({{ rec.laptop_id }}, this)">
+                    <i class="bi bi-columns-gap"></i> Compare
+                  </button>
+                  <button class="ls-btn ls-btn-save"
+                          data-lid="{{ rec.laptop_id }}"
+                          onclick="toggleSave({{ rec.laptop_id }}, {{ rec.model_name | tojson }}, {{ rec.price }})">
+                    <i class="bi bi-heart"></i>
+                  </button>
+                </div>
+
+                <button class="ls-variants-link mt-1"
+                        onclick="showVariants({{ rec.model_series | tojson }}, {{ rec.model_name | tojson }})">
+                  <i class="bi bi-collection"></i> View All Variants →
+                </button>
+              </div>
+
+              <!-- Score ring + mini bars -->
+              <div class="ls-rec-scores">
+                <div class="ls-score-ring" data-score="{{ rec.recommendation_score }}" style="--pct: 0">
+                  <div class="ls-score-ring-inner">
+                    <span class="ls-ring-num">{{ rec.recommendation_score | int }}</span>
+                    <span class="ls-ring-pct">%</span>
+                  </div>
+                </div>
+                <p class="ls-ring-label">Match Score</p>
+
+                <div class="ls-mini-bars">
+                  <div class="ls-mini-bar-row">
+                    <span class="ls-mini-bar-label">Perf.</span>
+                    <div class="ls-mini-bar-track">
+                      <div class="ls-mini-bar-fill ls-fill-blue" style="width: {{ rec.performance_score }}%"></div>
+                    </div>
+                    <span class="ls-mini-bar-val">{{ rec.performance_score }}%</span>
+                  </div>
+                  <div class="ls-mini-bar-row">
+                    <span class="ls-mini-bar-label">Value</span>
+                    <div class="ls-mini-bar-track">
+                      <div class="ls-mini-bar-fill ls-fill-green" style="width: {{ rec.value_score }}%"></div>
+                    </div>
+                    <span class="ls-mini-bar-val">{{ rec.value_score }}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pros / Cons -->
+            <div class="ls-pros-cons">
+              <div class="ls-pros-block">
+                <div class="ls-pros-cons-title pro">
+                  <i class="bi bi-check-circle-fill"></i> Pros
+                </div>
+                <ul>
+                  {% for pro in rec.pros %}
+                  <li>{{ pro }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="ls-cons-block">
+                <div class="ls-pros-cons-title con">
+                  <i class="bi bi-x-circle-fill"></i> Cons
+                </div>
+                <ul>
+                  {% for con in rec.cons %}
+                  <li>{{ con }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <!-- Alternatives -->
+            {% if rec.cheaper_alternative or rec.better_alternative %}
+            <div class="ls-alt-row">
+              {% if rec.cheaper_alternative %}
+              <div class="ls-alt-chip ls-alt-cheaper">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+                Cheaper: {{ rec.cheaper_alternative.model_name }} — ₹{{ "{:,}".format(rec.cheaper_alternative.price) }}
+              </div>
+              {% endif %}
+              {% if rec.better_alternative %}
+              <div class="ls-alt-chip ls-alt-better">
+                <i class="bi bi-arrow-up-circle-fill"></i>
+                Better Perf: {{ rec.better_alternative.model_name }} — ₹{{ "{:,}".format(rec.better_alternative.price) }}
+              </div>
+              {% endif %}
+            </div>
+            {% endif %}
+
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- ====================================================
+             COMPARISON TABLE (all 5 side-by-side)
+             ==================================================== -->
+        <div class="ls-comp-table-section" id="comparisonSection">
+          <div class="ls-comp-table-title">
+            <i class="bi bi-table text-primary"></i> Full Comparison Table
+          </div>
+          <div class="table-responsive rounded overflow-hidden" style="box-shadow: 0 2px 12px rgba(0,0,0,0.07)">
+            <table class="ls-comp-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Price (₹)</th>
+                  <th>Processor</th>
+                  <th>RAM</th>
+                  <th>SSD</th>
+                  <th>Graphics</th>
+                  <th>Screen</th>
+                  <th>OS</th>
+                  <th>Spec Score</th>
+                  <th>Match %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for rec in recommendations %}
+                <tr>
+                  <td>{{ rec.model_name }}</td>
+                  <td class="ls-comp-table-price">₹{{ "{:,}".format(rec.price) }}</td>
+                  <td>{{ rec.processor }}</td>
+                  <td>{{ rec.ram }}GB</td>
+                  <td>{{ rec.ssd }}GB{% if rec.hdd > 0 %} + {{ rec.hdd }}HDD{% endif %}</td>
+                  <td>{{ rec.graphics }}</td>
+                  <td>{{ rec.screen_size }}"</td>
+                  <td>{{ rec.os }}</td>
+                  <td>{{ rec.spec_score }}</td>
+                  <td><span class="ls-rec-score-badge">{{ rec.recommendation_score }}%</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================
+           RIGHT PANEL: VARIANTS (desktop only)
+           ====================================================== -->
+      <div class="col-lg-3 d-none d-lg-block">
+        <div class="ls-variants-panel" id="variantsPanel">
+          <div class="ls-variants-panel-header d-none" id="variantsPanelHeader">
+            <div class="ls-variants-panel-title" id="variantsPanelTitle">Variants</div>
+            <div class="ls-variants-panel-sub">Same model. Different configurations.</div>
+          </div>
+          <div id="variantsTableContainer">
+            <div class="ls-variants-empty">
+              <i class="bi bi-collection ls-variants-empty-icon"></i>
+              <p>Click <strong>"View All Variants →"</strong> on any laptop card to see different configurations of that model family.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     LAPTOP DETAILS MODAL
+     ============================================================ -->
+<div class="modal fade ls-modal" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsModalLabel">Laptop Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="detailsModalBody">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     COMPARE MODAL
+     ============================================================ -->
+<div class="modal fade ls-modal" id="compareModal" tabindex="-1" aria-labelledby="compareModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="compareModalLabel">
+          <i class="bi bi-columns-gap me-2"></i> Compare Laptops
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="compareModalBody">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     VARIANTS OFFCANVAS (mobile / tablet)
+     ============================================================ -->
+<div class="offcanvas offcanvas-end ls-offcanvas" tabindex="-1" id="variantsOffcanvas" aria-labelledby="variantsOcTitle">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="variantsOcTitle">All Variants</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="variantsOcTableContainer">
+      <div class="ls-variants-empty">
+        <i class="bi bi-collection ls-variants-empty-icon"></i>
+        <p>Loading variants…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SAVED LAPTOPS MODAL
+     ============================================================ -->
+<div class="modal fade ls-modal" id="savedModal" tabindex="-1" aria-labelledby="savedModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="savedModalLabel">
+          <i class="bi bi-heart-fill me-2"></i> Saved Laptops
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="savedModalBody">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     EMBEDDED JSON DATA FOR JS
+     ============================================================ -->
+<script type="application/json" id="ls-rec-data">
+{{ recommendations | tojson }}
+</script>
+
+<!-- ============================================================
+     SEARCH DETAIL — Tabbed Offcanvas Panel
+     ============================================================ -->
+<div class="offcanvas offcanvas-end sdp-offcanvas" tabindex="-1" id="searchDetailOffcanvas" aria-labelledby="sdpTitle">
+  <div class="sdp-header">
+    <div class="sdp-header-info">
+      <h5 class="sdp-title" id="sdpTitle">Laptop Details</h5>
+      <div class="sdp-subtitle" id="sdpSubtitle">Loading…</div>
+    </div>
+    <button type="button" class="btn-close sdp-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <ul class="nav sdp-nav" id="sdpNavTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn active" data-bs-toggle="tab" data-bs-target="#sdpTabOverview"    role="tab" aria-selected="true"><i class="bi bi-house-fill"></i> Overview</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn" data-bs-toggle="tab" data-bs-target="#sdpTabSpecs"        role="tab" aria-selected="false"><i class="bi bi-list-check"></i> Specs</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn" data-bs-toggle="tab" data-bs-target="#sdpTabPerformance"  role="tab" aria-selected="false"><i class="bi bi-bar-chart-fill"></i> Performance</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn" data-bs-toggle="tab" data-bs-target="#sdpTabAlternatives" role="tab" aria-selected="false"><i class="bi bi-arrow-left-right"></i> Alternatives</button>
+    </li>
+  </ul>
+  <div class="offcanvas-body sdp-body">
+    <div class="tab-content h-100">
+      <div class="tab-pane fade show active" id="sdpTabOverview"    role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+      <div class="tab-pane fade" id="sdpTabSpecs"         role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+      <div class="tab-pane fade" id="sdpTabPerformance"   role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+      <div class="tab-pane fade" id="sdpTabAlternatives"  role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/script.js?v=2"></script>
+</body>
+</html>

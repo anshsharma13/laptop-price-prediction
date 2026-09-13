@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About LaptopScout — How It Works</title>
+  <meta name="description" content="Learn how LaptopScout uses a content-based recommendation system with feature engineering, normalization, and cosine similarity to match you with the perfect laptop.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="ls-navbar navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="ls-brand navbar-brand" href="/">
+      <i class="bi bi-laptop-fill"></i> LaptopScout
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navAbout" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navAbout">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-search me-1"></i> Find Laptop</a></li>
+        <li class="nav-item"><a class="nav-link active" href="/about"><i class="bi bi-info-circle me-1"></i> About</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="ls-about-hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="ls-hero-badge mb-3">
+          <i class="bi bi-mortarboard-fill"></i> Academic Project
+        </div>
+        <h1>About LaptopScout</h1>
+        <p class="mb-0">
+          A Content-Based Laptop Recommendation System using Feature Engineering,
+          Normalization, and Cosine Similarity.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section class="ls-about-content">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- How the Algorithm Works -->
+      <div class="col-lg-8">
+        <div class="ls-about-card">
+          <h5><i class="bi bi-diagram-3-fill"></i> How the Algorithm Works</h5>
+          <p>
+            LaptopScout uses a <strong>hybrid content-based recommendation system</strong>
+            that combines feature normalization, cosine similarity, and purpose-weighted scoring to
+            suggest the most relevant laptops for each user.
+          </p>
+          <ol>
+            <li>
+              <strong>Hard Filtering:</strong> Laptops outside the user's stated budget are strictly
+              excluded. Minimum RAM is enforced as a hard constraint. Other preferences (brand, SSD,
+              processor family, graphics, OS) are applied as soft filters — they tighten the pool
+              but never leave it empty.
+            </li>
+            <li>
+              <strong>Feature Normalization:</strong> The remaining laptops' numerical features
+              (price, spec_score, RAM, SSD, CPU cores) are normalized using
+              <strong>MinMaxScaler</strong> to bring all values into a 0–1 range for fair comparison.
+            </li>
+            <li>
+              <strong>Cosine Similarity:</strong> A synthetic <em>ideal user vector</em> is
+              constructed from the user's requirements (target budget, desired RAM, SSD, max cores).
+              The system calculates <strong>cosine similarity</strong> between this ideal vector and
+              every laptop's normalized feature vector to measure closeness of fit.
+            </li>
+            <li>
+              <strong>Purpose-Based Weights:</strong> Depending on the user's stated purpose
+              (Gaming, Programming, Student, ML, etc.), a configurable weight table amplifies the
+              features most relevant to that use case. For example, Gaming weights GPU and CPU
+              heavily; Student weighs price efficiency most.
+            </li>
+            <li>
+              <strong>Hybrid Final Score:</strong> The four component scores are blended into a
+              single recommendation score:
+              <br>
+              <code style="display:block;margin:10px 0;padding:10px;background:#F1F5F9;border-radius:8px;font-size:0.85rem">
+                final_score = preference_score × 0.35 + performance_score × 0.25
+                            + value_score × 0.20 + purpose_score × 0.20
+              </code>
+              Scores are scaled to a display range of 65–97% to represent realistic confidence levels.
+            </li>
+            <li>
+              <strong>Category Identification:</strong> The top laptop by final_score becomes
+              <em>Best Match</em>; by value_score becomes <em>Best Value</em>;
+              by performance_score becomes <em>Best Performance</em>.
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="col-lg-4">
+        <div class="ls-about-card mb-4">
+          <h5><i class="bi bi-stack"></i> Technology Stack</h5>
+          <div style="display:flex;flex-wrap:wrap;margin:-4px">
+            <span class="ls-tech-pill"><i class="bi bi-filetype-py text-primary"></i> Python 3</span>
+            <span class="ls-tech-pill"><i class="bi bi-server text-warning"></i> Flask</span>
+            <span class="ls-tech-pill"><i class="bi bi-table text-success"></i> Pandas</span>
+            <span class="ls-tech-pill"><i class="bi bi-calculator text-danger"></i> NumPy</span>
+            <span class="ls-tech-pill"><i class="bi bi-robot text-purple"></i> Scikit-learn</span>
+            <span class="ls-tech-pill"><i class="bi bi-filetype-html text-orange"></i> HTML5</span>
+            <span class="ls-tech-pill"><i class="bi bi-palette2 text-info"></i> CSS3</span>
+            <span class="ls-tech-pill"><i class="bi bi-filetype-js text-warning"></i> JavaScript</span>
+            <span class="ls-tech-pill"><i class="bi bi-bootstrap text-primary"></i> Bootstrap 5</span>
+            <span class="ls-tech-pill"><i class="bi bi-file-earmark-spreadsheet text-success"></i> CSV Dataset</span>
+          </div>
+        </div>
+
+        <div class="ls-about-card">
+          <h5><i class="bi bi-bar-chart-fill"></i> Dataset</h5>
+          <p>
+            The recommendation engine is powered by a curated dataset of real-world laptop
+            specifications sourced from e-commerce listings. Key fields used:
+          </p>
+          <ul>
+            <li>Model name &amp; Brand</li>
+            <li>Processor name</li>
+            <li>RAM (GB), SSD (GB), HDD (GB)</li>
+            <li>Graphics card</li>
+            <li>Screen size &amp; Resolution</li>
+            <li>Operating System</li>
+            <li>Number of cores &amp; threads</li>
+            <li>Spec score &amp; Price (₹)</li>
+          </ul>
+          <p class="mb-0">
+            No data is fabricated or estimated — all displayed specifications come directly from
+            the dataset.
+          </p>
+        </div>
+      </div>
+
+      <!-- Key Features -->
+      <div class="col-lg-4">
+        <div class="ls-about-card h-100">
+          <h5><i class="bi bi-stars"></i> Key Features</h5>
+          <ul>
+            <li>Smart budget-aware filtering</li>
+            <li>Purpose-adaptive scoring (8 use cases)</li>
+            <li>Three recommendation categories: Best Match, Best Value, Best Performance</li>
+            <li>Model variant grouping — same laptop, different configs</li>
+            <li>Side-by-side comparison of up to 3 laptops</li>
+            <li>Cheaper &amp; better-performance alternatives</li>
+            <li>Automatic pros &amp; cons from dataset values</li>
+            <li>Dynamic "Why this laptop?" explanation</li>
+            <li>Save to browser localStorage</li>
+            <li>Live search across model name, brand, processor &amp; GPU</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Scoring breakdown -->
+      <div class="col-lg-4">
+        <div class="ls-about-card h-100">
+          <h5><i class="bi bi-speedometer2"></i> Scoring Components</h5>
+          <div class="table-responsive">
+            <table style="width:100%;font-size:0.82rem;border-collapse:collapse">
+              <thead>
+                <tr style="background:#F1F5F9">
+                  <th style="padding:8px;text-align:left;font-weight:600;color:#475569">Component</th>
+                  <th style="padding:8px;text-align:left;font-weight:600;color:#475569">Weight</th>
+                  <th style="padding:8px;text-align:left;font-weight:600;color:#475569">What it measures</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="border-bottom:1px solid #E2E8F0">
+                  <td style="padding:8px;font-weight:600">Preference Score</td>
+                  <td style="padding:8px;color:#2563EB;font-weight:700">35%</td>
+                  <td style="padding:8px;color:#64748B">How closely specs match user requirements + cosine similarity</td>
+                </tr>
+                <tr style="border-bottom:1px solid #E2E8F0">
+                  <td style="padding:8px;font-weight:600">Performance Score</td>
+                  <td style="padding:8px;color:#6366F1;font-weight:700">25%</td>
+                  <td style="padding:8px;color:#64748B">Spec score, RAM, SSD, cores, GPU tier</td>
+                </tr>
+                <tr style="border-bottom:1px solid #E2E8F0">
+                  <td style="padding:8px;font-weight:600">Value Score</td>
+                  <td style="padding:8px;color:#16A34A;font-weight:700">20%</td>
+                  <td style="padding:8px;color:#64748B">Performance per price unit (normalized)</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px;font-weight:600">Purpose Score</td>
+                  <td style="padding:8px;color:#D97706;font-weight:700">20%</td>
+                  <td style="padding:8px;color:#64748B">Use-case weighted blend (GPU, CPU, RAM, price)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purpose weights -->
+      <div class="col-lg-4">
+        <div class="ls-about-card h-100">
+          <h5><i class="bi bi-sliders"></i> Purpose Weight Examples</h5>
+          <p style="font-size:0.82rem;color:#64748B">
+            The system adjusts what matters based on your stated goal:
+          </p>
+          <div style="font-size:0.8rem">
+            <div style="margin-bottom:10px;padding:10px;background:#FEF3C7;border-radius:8px">
+              <strong>🎮 Gaming</strong><br>
+              GPU 35% · CPU 25% · RAM 15% · SSD 10% · Price 15%
+            </div>
+            <div style="margin-bottom:10px;padding:10px;background:#EFF6FF;border-radius:8px">
+              <strong>💻 Programming</strong><br>
+              CPU 30% · RAM 30% · SSD 15% · Price 20% · GPU 5%
+            </div>
+            <div style="margin-bottom:10px;padding:10px;background:#F5F3FF;border-radius:8px">
+              <strong>🤖 Machine Learning</strong><br>
+              GPU 40% · CPU 25% · RAM 20% · SSD 10% · Price 5%
+            </div>
+            <div style="padding:10px;background:#F0FDF4;border-radius:8px">
+              <strong>🎓 Student</strong><br>
+              Price 40% · CPU 20% · RAM 20% · SSD 15% · GPU 5%
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="text-center mt-5">
+      <a href="/" class="ls-submit-btn" style="text-decoration:none;display:inline-flex">
+        <i class="bi bi-arrow-left"></i> Try LaptopScout
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

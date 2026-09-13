@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ laptop.model_name }} — LaptopScout</title>
+  <meta name="description" content="{{ laptop.brand }} {{ laptop.model_name }}: {{ laptop.processor }}, {{ laptop.ram }}GB RAM, {{ laptop.ssd }}GB SSD, {{ laptop.graphics }}. ₹{{ laptop.price }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="ls-navbar navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="ls-brand navbar-brand" href="/"><i class="bi bi-laptop-fill"></i> LaptopScout</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto me-3">
+        <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-arrow-left me-1"></i> Back to Search</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about"><i class="bi bi-info-circle me-1"></i> About</a></li>
+      </ul>
+      <div id="navSearchWrap">
+        <div class="ls-nav-search">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="navSearchInput" class="form-control" placeholder="Search laptops…" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div style="background:var(--bg-card);border-bottom:1px solid var(--border);padding:10px 0">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0" style="font-size:0.82rem">
+        <li class="breadcrumb-item"><a href="/" style="color:var(--primary);text-decoration:none">Home</a></li>
+        <li class="breadcrumb-item active" style="color:var(--text-muted)">{{ laptop.brand }}</li>
+        <li class="breadcrumb-item active" style="color:var(--text-muted)">{{ laptop.model_name }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div style="padding:40px 0 60px;background:var(--bg);min-height:calc(100vh - 130px)">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- LEFT: Main info -->
+      <div class="col-lg-8">
+
+        <!-- Header card -->
+        <div style="background:#fff;border-radius:var(--r-xl);padding:28px 32px;box-shadow:var(--shadow-md);border:1px solid var(--border);margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap">
+            <div>
+              <span style="display:inline-flex;align-items:center;gap:5px;background:var(--primary-dim);color:var(--primary);font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:var(--r-full);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.4px">
+                <i class="bi bi-award-fill"></i> {{ laptop.brand }}
+              </span>
+              <h1 style="font-size:1.5rem;font-weight:800;color:var(--text);line-height:1.25;margin-bottom:6px">
+                {{ laptop.model_name }}
+              </h1>
+              <p style="font-size:0.85rem;color:var(--text-muted);margin:0">
+                {{ laptop.processor }} &nbsp;·&nbsp; {{ laptop.ram }}GB RAM &nbsp;·&nbsp; {{ laptop.os }}
+              </p>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:2rem;font-weight:900;color:var(--text);letter-spacing:-1px">
+                ₹{{ "{:,}".format(laptop.price) }}
+              </div>
+              <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px">Indicative price</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full spec grid -->
+        <div style="background:#fff;border-radius:var(--r-xl);padding:24px 28px;box-shadow:var(--shadow-sm);border:1px solid var(--border);margin-bottom:20px">
+          <h2 style="font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--text-muted);margin-bottom:18px">
+            <i class="bi bi-list-check me-1" style="color:var(--primary)"></i> Full Specifications
+          </h2>
+          <div class="row g-3">
+            {% set specs = [
+              ('bi-cpu',         'Processor',       laptop.processor),
+              ('bi-memory',      'RAM',             laptop.ram | string + 'GB'),
+              ('bi-device-hdd',  'SSD Storage',     laptop.ssd | string + 'GB SSD' + (' + ' + laptop.hdd | string + 'GB HDD' if laptop.hdd > 0 else '')),
+              ('bi-gpu-card',    'Graphics',        laptop.graphics),
+              ('bi-display',     'Screen Size',     laptop.screen_size | string + '"'),
+              ('bi-aspect-ratio','Resolution',      laptop.resolution),
+              ('bi-windows',     'Operating System',laptop.os),
+              ('bi-diagram-3',   'CPU Cores',       laptop.no_of_cores | string + ' cores'),
+              ('bi-diagram-2',   'CPU Threads',     laptop.no_of_threads | string + ' threads'),
+              ('bi-speedometer2','Spec Score',      laptop.spec_score | string + ' / 100'),
+            ] %}
+            {% for icon, label, value in specs %}
+            <div class="col-sm-6">
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;height:100%">
+                <div style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:5px;display:flex;align-items:center;gap:5px">
+                  <i class="bi {{ icon }}" style="color:var(--primary)"></i> {{ label }}
+                </div>
+                <div style="font-size:0.9rem;font-weight:700;color:var(--text);line-height:1.3">{{ value }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Why Recommend -->
+        {% if laptop.why_explanation %}
+        <div style="background:linear-gradient(135deg,#EFF6FF,#F5F3FF);border:1px solid rgba(37,99,235,0.15);border-radius:var(--r-xl);padding:22px 26px;margin-bottom:20px">
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--primary);margin-bottom:10px">
+            <i class="bi bi-lightbulb-fill me-1"></i> System Analysis
+          </div>
+          <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.7;margin:0">
+            {{ laptop.why_explanation }}
+          </p>
+        </div>
+        {% endif %}
+
+        <!-- Pros / Cons -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--r-lg);padding:18px 20px">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">
+              <i class="bi bi-check-circle-fill me-1"></i> Pros
+            </div>
+            <ul style="margin:0;padding-left:16px;display:flex;flex-direction:column;gap:6px">
+              {% for pro in laptop.pros %}
+              <li style="font-size:0.82rem;color:#166534;line-height:1.4">{{ pro }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:var(--r-lg);padding:18px 20px">
+            <div style="font-size:0.75rem;font-weight:700;color:var(--danger);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">
+              <i class="bi bi-x-circle-fill me-1"></i> Cons
+            </div>
+            <ul style="margin:0;padding-left:16px;display:flex;flex-direction:column;gap:6px">
+              {% for con in laptop.cons %}
+              <li style="font-size:0.82rem;color:#991B1B;line-height:1.4">{{ con }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Scores + Alternatives + CTA -->
+      <div class="col-lg-4">
+
+        <!-- Score panel -->
+        <div style="background:#fff;border-radius:var(--r-xl);padding:24px;box-shadow:var(--shadow-sm);border:1px solid var(--border);margin-bottom:16px">
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted);margin-bottom:16px">
+            Performance Overview
+          </div>
+
+          {% set score_rows = [
+            ('Performance',   laptop.performance_score, '#2563EB', '#EFF6FF', '#BFDBFE'),
+            ('Value for Money', laptop.value_score,    '#16A34A', '#F0FDF4', '#BBF7D0'),
+            ('Match Score',   laptop.recommendation_score | int, '#6366F1', '#F5F3FF', '#DDD6FE'),
+          ] %}
+          {% for label, score, clr, bg, border in score_rows %}
+          <div style="margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+              <span style="font-size:0.78rem;font-weight:600;color:var(--text-mid)">{{ label }}</span>
+              <span style="font-size:0.78rem;font-weight:800;color:{{ clr }}">{{ score }}%</span>
+            </div>
+            <div style="height:8px;background:var(--bg);border-radius:99px;overflow:hidden">
+              <div style="height:100%;width:{{ score }}%;background:{{ clr }};border-radius:99px;transition:width 1s ease"></div>
+            </div>
+          </div>
+          {% endfor %}
+
+          <div style="background:var(--bg);border-radius:var(--r-md);padding:12px 14px;margin-top:12px;text-align:center">
+            <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:2px">Overall Spec Score</div>
+            <div style="font-size:1.8rem;font-weight:900;color:var(--text)">{{ laptop.spec_score }}</div>
+            <div style="font-size:0.7rem;color:var(--text-muted)">out of 100</div>
+          </div>
+        </div>
+
+        <!-- Suitable For -->
+        {% if laptop.suitable_for %}
+        <div style="background:#fff;border-radius:var(--r-xl);padding:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);margin-bottom:16px">
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted);margin-bottom:12px">
+            Best Suited For
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px">
+            {% for tag in laptop.suitable_for %}
+            <span style="display:inline-flex;align-items:center;gap:4px;background:var(--purple-dim);color:var(--purple);font-size:0.78rem;font-weight:600;padding:5px 12px;border-radius:var(--r-full)">
+              <i class="bi bi-check2"></i> {{ tag }}
+            </span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Alternatives -->
+        {% if laptop.cheaper_alternative or laptop.better_alternative %}
+        <div style="background:#fff;border-radius:var(--r-xl);padding:20px;box-shadow:var(--shadow-sm);border:1px solid var(--border);margin-bottom:16px">
+          <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted);margin-bottom:12px">
+            Alternatives to Consider
+          </div>
+          {% if laptop.cheaper_alternative %}
+          <a href="/laptop/{{ laptop.cheaper_alternative.laptop_id }}" style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--green-dim);border:1px solid rgba(22,163,74,0.2);border-radius:var(--r-md);margin-bottom:8px;text-decoration:none">
+            <div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--green)"><i class="bi bi-arrow-down-circle-fill me-1"></i> Cheaper Option</div>
+              <div style="font-size:0.75rem;color:#166534;margin-top:2px">{{ laptop.cheaper_alternative.model_name }}</div>
+            </div>
+            <div style="font-size:0.88rem;font-weight:800;color:var(--green)">₹{{ "{:,}".format(laptop.cheaper_alternative.price) }}</div>
+          </a>
+          {% endif %}
+          {% if laptop.better_alternative %}
+          <a href="/laptop/{{ laptop.better_alternative.laptop_id }}" style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--primary-dim);border:1px solid rgba(37,99,235,0.2);border-radius:var(--r-md);text-decoration:none">
+            <div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--primary)"><i class="bi bi-arrow-up-circle-fill me-1"></i> Better Performance</div>
+              <div style="font-size:0.75rem;color:#1E40AF;margin-top:2px">{{ laptop.better_alternative.model_name }}</div>
+            </div>
+            <div style="font-size:0.88rem;font-weight:800;color:var(--primary)">₹{{ "{:,}".format(laptop.better_alternative.price) }}</div>
+          </a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- CTA -->
+        <a href="/" class="ls-submit-btn" style="text-decoration:none;display:flex;justify-content:center;width:100%">
+          <i class="bi bi-magic"></i> Find Similar Laptops
+        </a>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

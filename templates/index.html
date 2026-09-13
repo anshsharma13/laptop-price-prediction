@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LaptopScout — Find the Perfect Laptop for You</title>
+  <meta name="description" content="LaptopScout is a smart laptop recommendation system that helps you find the best laptop based on your budget, purpose, and preferences using AI-powered matching.">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/style.css?v=2">
+  <link rel="stylesheet" href="/static/css/sdp.css?v=2">
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="ls-navbar navbar navbar-expand-lg">
+  <div class="container-fluid px-4">
+    <a class="ls-brand navbar-brand" href="/">
+      <i class="bi bi-laptop-fill"></i> LaptopScout
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav ms-auto me-3 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link active" href="/">
+            <i class="bi bi-search me-1"></i> Find Laptop
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="savedNavBtn">
+            <i class="bi bi-heart me-1"></i> Saved
+            <span class="ls-saved-badge" id="savedBadge">0</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">
+            <i class="bi bi-info-circle me-1"></i> About
+          </a>
+        </li>
+      </ul>
+
+      <div id="navSearchWrap">
+        <div class="ls-nav-search">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="navSearchInput" class="form-control" placeholder="Search laptops…" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="ls-hero">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <div class="ls-hero-badge">
+          <i class="bi bi-stars"></i> Content-Based Recommendation System
+        </div>
+        <h1 class="ls-hero-heading">
+          Find the Laptop<br>
+          <span class="ls-gradient-text">That Fits You</span>
+        </h1>
+        <p class="ls-hero-sub">Smart recommendations. Real choices. No confusion.</p>
+        <div class="ls-hero-features">
+          <span class="ls-feature-chip"><i class="bi bi-cpu-fill"></i> AI-Powered Suggestions</span>
+          <span class="ls-feature-chip"><i class="bi bi-columns-gap"></i> Compare Models</span>
+          <span class="ls-feature-chip"><i class="bi bi-collection"></i> Explore Variants</span>
+          <span class="ls-feature-chip"><i class="bi bi-check2-circle"></i> Honest Pros &amp; Cons</span>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="ls-hero-illus">
+          <div class="ls-hero-illus-inner">
+            <svg class="ls-laptop-svg" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+              <!-- Laptop base -->
+              <rect x="20" y="150" width="280" height="18" rx="9" fill="#1E293B"/>
+              <rect x="40" y="148" width="240" height="4" rx="2" fill="#334155"/>
+              <!-- Screen body -->
+              <rect x="55" y="30" width="210" height="122" rx="8" fill="#0F172A"/>
+              <rect x="60" y="35" width="200" height="112" rx="6" fill="#1E3A5F"/>
+              <!-- Screen content (simulated UI) -->
+              <rect x="68" y="42" width="60" height="6" rx="3" fill="rgba(255,255,255,0.15)"/>
+              <rect x="68" y="54" width="184" height="3" rx="1.5" fill="rgba(255,255,255,0.08)"/>
+              <rect x="68" y="62" width="140" height="3" rx="1.5" fill="rgba(255,255,255,0.08)"/>
+              <!-- Card 1 -->
+              <rect x="68" y="74" width="84" height="64" rx="4" fill="rgba(37,99,235,0.25)"/>
+              <rect x="74" y="80" width="40" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
+              <rect x="74" y="88" width="60" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="74" y="95" width="50" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="74" y="102" width="55" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="74" y="122" width="50" height="10" rx="5" fill="#2563EB"/>
+              <!-- Card 2 -->
+              <rect x="160" y="74" width="84" height="64" rx="4" fill="rgba(99,102,241,0.2)"/>
+              <rect x="166" y="80" width="40" height="4" rx="2" fill="rgba(255,255,255,0.3)"/>
+              <rect x="166" y="88" width="60" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="166" y="95" width="50" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="166" y="102" width="55" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+              <rect x="166" y="122" width="50" height="10" rx="5" fill="#6366F1"/>
+              <!-- Score ring simulation -->
+              <circle cx="240" cy="60" r="16" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"/>
+              <circle cx="240" cy="60" r="16" fill="none" stroke="#2563EB" stroke-width="4" stroke-dasharray="80 20" stroke-linecap="round" transform="rotate(-90 240 60)"/>
+              <text x="240" y="64" font-size="8" fill="white" text-anchor="middle" font-weight="bold">92%</text>
+              <!-- Keyboard hints -->
+              <rect x="55" y="152" width="210" height="6" rx="3" fill="#0F172A"/>
+            </svg>
+            <div class="ls-illus-glow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Error alert -->
+{% if error %}
+<div class="container mt-4">
+  <div class="alert ls-alert ls-alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+</div>
+{% endif %}
+
+<!-- ============================================================
+     PREFERENCE FORM
+     ============================================================ -->
+<section class="ls-form-section">
+  <div class="container">
+    <form action="/" method="POST" id="recommendationForm" novalidate>
+
+      <!-- BUDGET -->
+      <div class="ls-form-card">
+        <div class="ls-section-label">
+          <i class="bi bi-currency-rupee"></i> Your Budget
+        </div>
+        <div class="ls-budget-wrap">
+          <span class="ls-budget-sym">₹</span>
+          <input
+            type="number"
+            id="budget"
+            name="budget"
+            class="ls-budget-input"
+            placeholder="e.g. 80000"
+            required
+            min="10000"
+            max="500000"
+            step="1000"
+          >
+        </div>
+        <p class="ls-budget-hint">Enter your maximum budget in Indian Rupees (minimum ₹10,000)</p>
+      </div>
+
+      <!-- PURPOSE -->
+      <div class="ls-form-card">
+        <div class="ls-section-label">
+          <i class="bi bi-bullseye"></i> Your Primary Purpose
+          <span style="font-size:0.72rem;font-weight:400;color:#94A3B8;text-transform:none;letter-spacing:0">&nbsp;(optional — improves recommendations)</span>
+        </div>
+        <div class="ls-purpose-grid" id="purposeGrid">
+          <!-- Populated by JS -->
+        </div>
+        <input type="hidden" name="purpose" id="purposeInput" value="">
+      </div>
+
+      <!-- HARDWARE -->
+      <div class="ls-form-card">
+        <div class="ls-section-label">
+          <i class="bi bi-cpu-fill"></i> Hardware Preferences
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6 col-lg-4">
+            <label for="brand" class="ls-label">Preferred Brand</label>
+            <select id="brand" name="brand" class="ls-select">
+              <option value="">Any Brand</option>
+              {% for b in brands %}
+              <option value="{{ b }}">{{ b }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <label for="processor" class="ls-label">Processor Family</label>
+            <select id="processor" name="processor" class="ls-select">
+              <option value="">Any Processor</option>
+              <option value="core i3">Intel Core i3</option>
+              <option value="core i5">Intel Core i5</option>
+              <option value="core i7">Intel Core i7</option>
+              <option value="core i9">Intel Core i9</option>
+              <option value="ryzen 3">AMD Ryzen 3</option>
+              <option value="ryzen 5">AMD Ryzen 5</option>
+              <option value="ryzen 7">AMD Ryzen 7</option>
+              <option value="ryzen 9">AMD Ryzen 9</option>
+              <option value="apple">Apple M1/M2</option>
+            </select>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <label for="ram" class="ls-label">Minimum RAM</label>
+            <select id="ram" name="ram" class="ls-select">
+              <option value="">Any RAM</option>
+              <option value="4">4 GB</option>
+              <option value="8">8 GB</option>
+              <option value="16">16 GB</option>
+              <option value="32">32 GB</option>
+            </select>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <label for="storage" class="ls-label">Minimum Storage</label>
+            <select id="storage" name="storage" class="ls-select">
+              <option value="">Any Storage</option>
+              <option value="256">256 GB SSD</option>
+              <option value="512">512 GB SSD</option>
+              <option value="1024">1 TB SSD</option>
+            </select>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <label for="graphics" class="ls-label">Graphics Requirement</label>
+            <select id="graphics" name="graphics" class="ls-select">
+              <option value="">Any Graphics</option>
+              <option value="integrated">Integrated Graphics</option>
+              <option value="nvidia">NVIDIA Dedicated</option>
+              <option value="rtx">NVIDIA RTX Series</option>
+              <option value="gtx">NVIDIA GTX Series</option>
+              <option value="amd radeon">AMD Radeon Dedicated</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISPLAY & OS -->
+      <div class="ls-form-card">
+        <div class="ls-section-label">
+          <i class="bi bi-display"></i> Display &amp; Operating System
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6 col-lg-4">
+            <label for="screen" class="ls-label">Screen Size</label>
+            <select id="screen" name="screen" class="ls-select">
+              <option value="">Any Screen Size</option>
+              <option value="13">13″ – 14″ (Compact)</option>
+              <option value="15">15.6″ (Standard)</option>
+              <option value="16">16″+ (Large)</option>
+            </select>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <label for="resolution" class="ls-label">Resolution</label>
+            <select id="resolution" name="resolution" class="ls-select">
+              <option value="">Any Resolution</option>
+              <option value="1920">FHD 1080p (1920×1080)</option>
+              <option value="2560">QHD 1440p / Mac Retina</option>
+              <option value="3840">4K UHD (3840×2160)</option>
+            </select>
+          </div>
+          <div class="col-sm-6 col-lg-4">
+            <label for="os" class="ls-label">Operating System</label>
+            <select id="os" name="os" class="ls-select">
+              <option value="">Any OS</option>
+              <option value="Windows">Windows</option>
+              <option value="Mac">macOS</option>
+              <option value="DOS">DOS / No OS (Linux-ready)</option>
+              <option value="Chrome">Chrome OS</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="text-center mt-4 pb-2">
+        <button type="submit" class="ls-submit-btn" id="submitBtn">
+          <i class="bi bi-magic"></i> Get My Recommendations
+        </button>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+<!-- ============================================================
+     LOADING OVERLAY
+     ============================================================ -->
+<div id="loadingOverlay" class="ls-loading-overlay d-none" aria-live="polite">
+  <div class="ls-spinner"></div>
+  <div class="ls-loading-title">Analyzing Laptops…</div>
+  <div class="ls-loading-sub">Finding the best matches for your needs.</div>
+</div>
+
+<!-- ============================================================
+     SAVED LAPTOPS MODAL
+     ============================================================ -->
+<div class="modal fade ls-modal" id="savedModal" tabindex="-1" aria-labelledby="savedModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="savedModalLabel"><i class="bi bi-heart-fill me-2"></i>Saved Laptops</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="savedModalBody">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SEARCH DETAIL — Tabbed Offcanvas Panel
+     Opens when a search result is clicked.
+     ============================================================ -->
+<div class="offcanvas offcanvas-end sdp-offcanvas" tabindex="-1" id="searchDetailOffcanvas" aria-labelledby="sdpTitle">
+
+  <!-- Header -->
+  <div class="sdp-header">
+    <div class="sdp-header-info">
+      <h5 class="sdp-title" id="sdpTitle">Laptop Details</h5>
+      <div class="sdp-subtitle" id="sdpSubtitle">Loading…</div>
+    </div>
+    <button type="button" class="btn-close sdp-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <!-- Tab nav -->
+  <ul class="nav sdp-nav" id="sdpNavTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn active" data-bs-toggle="tab" data-bs-target="#sdpTabOverview"     role="tab" aria-selected="true">
+        <i class="bi bi-house-fill"></i> Overview
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn" data-bs-toggle="tab" data-bs-target="#sdpTabSpecs"         role="tab" aria-selected="false">
+        <i class="bi bi-list-check"></i> Specs
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn" data-bs-toggle="tab" data-bs-target="#sdpTabPerformance"   role="tab" aria-selected="false">
+        <i class="bi bi-bar-chart-fill"></i> Performance
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="sdp-nav-btn" data-bs-toggle="tab" data-bs-target="#sdpTabAlternatives"  role="tab" aria-selected="false">
+        <i class="bi bi-arrow-left-right"></i> Alternatives
+      </button>
+    </li>
+  </ul>
+
+  <!-- Tab content -->
+  <div class="offcanvas-body sdp-body">
+    <div class="tab-content h-100">
+      <div class="tab-pane fade show active" id="sdpTabOverview"     role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+      <div class="tab-pane fade" id="sdpTabSpecs"          role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+      <div class="tab-pane fade" id="sdpTabPerformance"    role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+      <div class="tab-pane fade" id="sdpTabAlternatives"   role="tabpanel">
+        <div class="sdp-loading"><div class="ls-spinner" style="width:32px;height:32px;border-width:3px"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/script.js?v=2"></script>
+</body>
+</html>
+
