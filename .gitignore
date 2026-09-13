@@ -29,3 +29,6 @@ venv.bak/
 *.db
 .vscode/
 .idea/
+
+# Local Netlify folder
+.netlify
